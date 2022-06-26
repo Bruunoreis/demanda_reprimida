@@ -1,11 +1,13 @@
-# Author: Guled
-# Problem: Multiple Knapsack
+# Adaptado den Guled em https://github.com/Somnibyte/Multiple-Knapsack-Problem-Genetic-Algorithm
+# Problema: Multiplas Mochilas
+
+
 from genetic_toolkit import Population,Chromosome,BiologicalProcessManager
 import statistics
 import random
 
 '''
-	Generation Evaluation Function
+	Função de avaliação de geração
 '''
 def find_the_best(population):
 	best = None
@@ -14,15 +16,18 @@ def find_the_best(population):
 			best = individual
 	return best.fitness
 
-# Global Variables
+# Variáveis globais
 crossover_rate = 0.165
 
-# Initialize population with random candidate solutions
+
+# Inicializa a população com soluções candidatas aleatórias
 population = Population(700)
 population.initialize_population()
-# Set the mutation rate
+
+# Defina a taxa de mutação
 mutation_rate = 2.2/population.populationSize
-# Get a reference to the number of knapsacks
+
+# Obter uma referência ao número de mochilas
 numberOfKnapsacks = population.numberOfKnapsacks
 
 
@@ -32,25 +37,26 @@ while(generation_counter != 100):
 	print("CURRENT GEN FITNESS: {} \n ".format(current_population_fitnesses))
 	new_gen = []
 	while(len(new_gen) != population.populationSize):
-		# Create tournament for tournament selection process
+		
+		# Criar torneio para processo de seleção de torneio
 		tournament = [population.population[random.randint(1, population.populationSize-1)] for individual in range(1, population.populationSize)]
-		# Obtain two parents from the process of tournament selection
+		# Obtenha dois pais no processo de seleção do torneio
 		parent_one, parent_two = population.select_parents(tournament)
-		# Create the offspring from those two parents
+		# Cria a descendência desses dois pais
 		child_one,child_two = BiologicalProcessManager.crossover(crossover_rate,parent_one,parent_two)
 
-		# Try to mutate the children
+		# Tente transformar as crianças
 		BiologicalProcessManager.mutate(mutation_rate, child_one, numberOfKnapsacks)
 		BiologicalProcessManager.mutate(mutation_rate, child_two, numberOfKnapsacks)
 
-		# Evaluate each of the children
+		# Avalie cada uma das crianças
 		child_one.generateFitness(population.knapsackList)
 		child_two.generateFitness(population.knapsackList)
 
-		# Add the children to the new generation of chromsomes
+		# Adicione os filhos à nova geração de cromossomas
 		new_gen.append(child_one)
 		new_gen.append(child_two)
 
-	# Replace old generation with the new one
+	# Substitua a geração antiga pela nova
 	population.population = new_gen
 	generation_counter += 1
