@@ -1,3 +1,7 @@
+# Adaptado den Guled em https://github.com/Somnibyte/Multiple-Knapsack-Problem-Genetic-Algorithm
+# Problema: Multiplas Mochilas
+
+
 import random
 import linecache
 import copy
