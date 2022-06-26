@@ -3,12 +3,12 @@ import linecache
 import copy
 from collections import namedtuple
 
-# Class to represent biological processes
+
+# Classe para representar processos biológicos
 class BiologicalProcessManager:
 		'''
-			Crossover Function
-
-			- The process of One-Point crossover is exercised in this function.
+			Função de cruzamento
+			- O processo de cruzamento de um ponto é exercido nesta função.
 		'''
 		def crossover(crossover_rate, parentOne, parentTwo):
 			random_probability = random.random()
@@ -31,24 +31,24 @@ class BiologicalProcessManager:
 				return (child_one, child_two)
 
 		'''
-			Mutation function
-
-			- The process of Random Resetting is exercised in this function.
+			Função de mutação
+			- O processo de Reinicialização Aleatória é exercido nesta função.
 		'''
 		def mutate(mutation_rate, child, numberOfKnapsacks):
 			for index, position in enumerate(child.genotype_representation):
 				random_probability = random.random()
 				'''
-					(Random Resetting) "Flip" the position with another knapsack if probability < mutation_rate
+					(Reinicialização aleatória) "Inverta" a posição com outra mochila se probabilidade < taxa_mutação
 				'''
 				if random_probability < mutation_rate:
 					child.genotype_representation[index] = random.randint(0,numberOfKnapsacks)
 
-# Class to represent chromosome
+
+# Classe para representar o cromossomo
 class Chromosome:
 
-	fitness = None # Chromosomes fitness
-	phenotype_representation = None # Phenotype representation
+	fitness = None # Aptidão cromossômica
+	phenotype_representation = None # Representação do fenótipo
 
 	def __init__(self, numOfKnapsacks, numOfObjects, genotype_representation = None):
 		self.numberOfKnapsacksReference = numOfKnapsacks
@@ -62,13 +62,13 @@ class Chromosome:
 		self.length_of_encoding = len(self.genotype_representation)
 
 	'''
-	 Generates a fitness for all the chromosomes by aggregating their benefits/values
+	Gera uma adequação para todos os cromossomos agregando seus benefícios/valores
 	'''
 	def generateFitness(self, knapsackList):
-		''' Make a copy of the knapsack list to be used to evaluate if objects in the chromsome
-			exceed C using the 'amountUsed' attribute
+		''' Faça uma cópia da lista da mochila a ser usada para avaliar se os objetos no cromossomo
+		exceda C usando o atributo 'amountUsed'
 		'''
-  ##sequencia de alocações
+ ##sequência de alocações
 		#print("ORIGINAL CHROM: {}".format(self.genotype_representation))
 		knapsacks = copy.deepcopy(knapsackList)
 		fitnessScore = 0
@@ -79,7 +79,7 @@ class Chromosome:
 			else:
 				for knapsack in knapsacks :         
 					if knapsack.id == placement_of_object and knapsack.id == self.phenotype_representation[i].ref :
-						# if it's over the capacity, change it's bag and revaluate
+						# se estiver acima da capacidade, troque de bolsa e reavalie
 						if self.phenotype_representation[i].weight > knapsack.capacity:
 							while(not done):
 
@@ -93,22 +93,23 @@ class Chromosome:
 										continue
 									if self.phenotype_representation[i].weight <= current_knapsack.capacity:
 										fitnessScore += self.phenotype_representation[i].value
-										'''We now subtract the objects weight by the knapsacks capacity
-										  so that we can keep track of how much space the knapsack has left
-										   in the event that another object goes into the same knapsack
+										'''Agora subtraímos o peso dos objetos pela capacidade das mochilas
+										para que possamos acompanhar quanto espaço a mochila deixou
+										no caso de outro objeto entrar na mesma mochila
 										'''
 									current_knapsack.capacity = (current_knapsack.capacity - self.phenotype_representation[i].weight)
 									break
 						else:
 							fitnessScore += self.phenotype_representation[i].value
-							'''We now subtract the objects weight by the knapsacks capacity
-							   so that we can keep track of how much space the knapsack has left
-							   in the event that another object goes into the same knapsack
+							'''Agora subtraímos o peso dos objetos pela capacidade das mochilas
+							para que possamos acompanhar quanto espaço a mochila deixou
+							no caso de outro objeto entrar na mesma mochila
 							'''
 							knapsack.capacity = (knapsack.capacity - self.phenotype_representation[i].weight)
 				
 
-		# update the chromosomes fitness
+		
+# atualiza o fitness dos cromossomos
 		self.fitness = fitnessScore
 
 
@@ -122,8 +123,8 @@ class Knapsack:
 class Population:
 
 	Phenotype = namedtuple('Phenotype', 'id weight value ref')
-	knapsackList = [] # list of knapsacks
-	knapSackEvaluationList = [] # used for generating fitness of chromosomes
+	knapsackList = [] # lista de mochilas
+	knapSackEvaluationList = [] # usado para gerar a aptidão dos cromossomos
 	population = []
 
 	def __init__(self, size):
@@ -132,20 +133,20 @@ class Population:
 
 	def select_parents(self,tournament):
 		'''
-			Tournament selection is being used to find two parents
+			A seleção do torneio está sendo usada para encontrar dois pais
 		'''
 		first_fittest_indiv = None
 		second_fittest_indiv = None
 
 		for individual in tournament:
-			# Check if this indivudal is fitter than the current fittist individual
+			# Verifique se este indivíduo é mais apto que o atual apto
 			if first_fittest_indiv == None or individual.fitness > first_fittest_indiv.fitness:
 				first_fittest_indiv = individual
 
 		tournament.remove(first_fittest_indiv)
 
 		for individual in tournament:
-			# Check if this indivudal is fitter than the current fittist individual
+			# Verifique se este indivíduo é mais apto que o atual apto
 			if second_fittest_indiv == None or individual.fitness > second_fittest_indiv.fitness:
 				second_fittest_indiv = individual
 
@@ -158,21 +159,21 @@ class Population:
      
      
 		'''
-			Read from a file and create the chromosomes
+			Leia de um arquivo e crie os cromossomos
 		'''
 		# Open data file
 		dataFile = open('data_5.txt','r')
 
-		# Read how many knapsacks there will be. (We read the first byte)
+		# Leia quantas mochilas haverá. (lemos o primeiro byte)
 		numOfKnapsacks = int(dataFile.read(2))
 		self.numberOfKnapsacks = numOfKnapsacks
 		#print("NUMBER OF KNAPSACKS: {} \n".format(numOfKnapsacks))
 		dataFile.seek(0,0);
 
-		# Read how many objects there will be.
+		# Leia quantos objetos haverá.
 		numOfObjects = int(dataFile.readlines()[numOfKnapsacks+1])
 
-		# Create knapsack dictionary
+		# Cria dicionário de mochila
 		lines_to_read = []
 		for num in range(0, numOfKnapsacks):
 			lines_to_read.append(num)
@@ -185,23 +186,23 @@ class Population:
 				capacity = int(line)
 				self.knapsackList.append(Knapsack((i), capacity))
 
-		# Create phenotype representation of chromosome
+		# Cria a representação do fenótipo do cromossomo
 		phenotype_representation = []
-		lineNumberOffset = numOfKnapsacks + 3 # file offset used to find the objects in the file
+		lineNumberOffset = numOfKnapsacks + 3 # deslocamento de arquivo usado para localizar os objetos no arquivo
 		for i in range(0,numOfObjects):
 			value,weight,ref = linecache.getline("data_5.txt", lineNumberOffset+i).split()
-			# Create the phenotype representation for each chromsome
+			# Cria a representação do fenótipo para cada cromossomo
 			phenotype_representation.append(self.Phenotype(i, int(value),int(weight),int(ref)))
 
-		# Create the initial population
+		# Cria a população inicial
 		for j in range(0,self.populationSize):
-			# Create a new chromosome
+			# Cria um novo cromossomo
 			new_chromosome = Chromosome(numOfKnapsacks,numOfObjects)
-			#  Give each chromosome it's phenotype representation
+			# Dê a cada cromossomo sua representação fenotípica
 			new_chromosome.phenotype_representation = phenotype_representation
-			# Evaluate each chromosome
+			# Avalia cada cromossomo
 			new_chromosome.generateFitness(self.knapsackList)
-			# Add the chromsome to the population
+			# Adiciona o cromossomo à população
 			self.population.append(new_chromosome)
 
 		dataFile.close()
